@@ -29,7 +29,7 @@ void setup() {
 
 
 void loop() {
-  buttonState ? potValueColor = analogRead(potPin) : potValuePower = analogRead(potPin);
+  buttonState ? potValueColor = analogRead(potPin) : potValuePower = analogRead(potPin)/4;
 
   RBGcommand(potValueColor, potValuePower);
 }
