@@ -4,9 +4,7 @@
 
 const uint8_t buttonPin = 2;
 
-const uint8_t ledPinBlue = 9;
-const uint8_t ledPinGreen = 10;
-const uint8_t ledPinRed = 11;
+const uint8_t ledPin = 8;
 
 const uint8_t potPin = A0;
 

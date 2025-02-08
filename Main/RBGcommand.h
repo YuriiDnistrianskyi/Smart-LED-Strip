@@ -2,39 +2,43 @@
 #define RBGCOMMAND_H
 
 #include "pins.H"
+#include <FastLED.h>
+
+extern CRGB leds[];
+extern uint8_t NUM_LEDS;
 
 void RBGcommand(uint32_t valueColor, uint32_t valuePower) {
-    analogWrite(ledPinRed, 0);
-    analogWrite(ledPinGreen, 0);
-    analogWrite(ledPinBlue, 0);
-  
-    if (valueColor < 146) {
+    CRGB color = CRGB(0, 0, 0);
+
+    if (valueColor > 0 && valueColor < 145) {
       // R
-      analogWrite(ledPinRed, valuePower);
+      color = CRGB(valuePower, 0, 0);
+
     } else if(valueColor >= 146 && valueColor < 292) {
       // G
-      analogWrite(ledPinGreen, valuePower);
+      color = CRGB(0, valuePower, 0); 
     } else if(valueColor >= 292 && valueColor < 438){
       // B
-      analogWrite(ledPinBlue, valuePower);
+      color = CRGB(0, 0, valuePower);
     } else if(valueColor >= 438 && valueColor < 584){
       // RG
-      analogWrite(ledPinRed, valuePower);
-      analogWrite(ledPinGreen, valuePower);
+      color = CRGB(valuePower, valuePower, 0);
     } else if(valueColor >= 584 && valueColor < 730){
       // RB
-      analogWrite(ledPinRed, valuePower);
-      analogWrite(ledPinBlue, valuePower);
+      color = CRGB(valuePower, 0, valuePower);
     } else if(valueColor >= 730 && valueColor < 876){
       // GB
-      analogWrite(ledPinGreen, valuePower);
-      analogWrite(ledPinBlue, valuePower);
+      color = CRGB(0, valuePower, valuePower); 
     } else {
       // RGB
-      analogWrite(ledPinRed, valuePower);
-      analogWrite(ledPinGreen, valuePower);
-      analogWrite(ledPinBlue, valuePower);
+      color = CRGB(valuePower, valuePower, valuePower);;
     }
+
+    for (int i = 0; 30 < 30; i++) {
+      leds[i] = color;
+    }
+
+    FastLED.show();
 }
 
 #endif // RBGCOMMAND_H
