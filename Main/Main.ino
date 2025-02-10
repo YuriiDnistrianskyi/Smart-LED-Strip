@@ -1,48 +1,44 @@
+#include <Arduino.h>
+#include <WiFi.h>
+#include <WebServer.h>
 #include <FastLED.h>
 
 #include "pins.h"
-#include "RBGcommand.h"
+#include "info.h"
+#include "RGBCommand.h"
+#include "html.h"
 
-#define NUM_LEDS 30 // 60
-
-unsigned long lastDebounceTime = 0;
-const long debounceTime = 50;
-
-bool buttonState = 0;
-uint32_t potValueColor = 0;
-uint32_t lastValueColor = 0;
-uint32_t potValuePower = 128;
-uint32_t lastValuePower = 128;
+WebServer server(80);
+CRGB leds[numLeds];
 
 
-CRGB leds[NUM_LEDS];
-
-void buttonFunc() {
-  unsigned long currentTime = millis();
-
-  if (currentTime - lastDebounceTime > debounceTime) {
-    buttonState = !buttonState;
-    lastDebounceTime = currentTime;
-  }
+void handleRoot() {
+  server.send(200, "text/html", html);
 }
-
 
 void setup() {
-  pinMode(buttonPin, INPUT);
-  attachInterrupt(digitalPinToInterrupt(buttonPin), buttonFunc, FALLING);
-
-  FastLED.addLeds<WS2812, ledPin, GRB>(leds, NUM_LEDS);
+  FastLED.addLeds<WS2812, ledPin, GRB>(leds, numLeds);
   FastLED.clear();
   FastLED.show();
+
+  Serial.begin(115200);
+  Serial.println("Go");
+
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) {
+    Serial.println("Wifi to connected...");
+    delay(1000);
+  }
+  Serial.println("Connected");
+  Serial.println("IP Address: ");
+  Serial.println(WiFi.localIP());
+
+  server.on("/", handleRoot);
+  server.begin();
 }
 
-
 void loop() {
-  buttonState ? potValueColor = analogRead(potPin) : potValuePower = analogRead(potPin)/4;
-
-  if (abs((int)lastValueColor - (int)potValueColor) > 10 || abs((int)lastValuePower - (int)potValuePower) > 10) {
-    RBGcommand(potValueColor, potValuePower);
-    lastValueColor = potValueColor;
-    lastValuePower = potValuePower;
-  }
+  server.handleClient();
+  
+  RGBCommand(100, 100, 100);
 }
