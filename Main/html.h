@@ -1,7 +1,7 @@
 #ifndef HTML_H
 #define HTML_H
 
-const char* html = R"rawliteral(
+const char html[] PROGMEM= R"rawliteral(
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -39,7 +39,7 @@ const char* html = R"rawliteral(
             height: 50%;
             border: 2px;
             border-radius: 50px;
-            background-color: #54996d;
+            background-color: #579954;
             font-size: 20px;
             transition: linear 0.3s;
         }
@@ -116,31 +116,76 @@ const char* html = R"rawliteral(
             <h1 class="text">Smart LED</h1>
         </div>
         <div class="section-block">
-            <button class="button-control">ON/OFF</button>
+            <button class="button-control" id="button" onclick="setButtonState()">ON</button>
         </div>
     </div>
 
     <div class="section-control">
         <div class="box">
             <div class="control">
-                <input class="slider red" type="range" id="volume-red" min="0" max="255" value="50">
+                <input class="slider red" type="range" id="volume-red" min="0" max="255" value="50" onchange="setLEDColor()">
             </div>
         </div>
 
         <div class="box">
             <div class="control">
-                <input class="slider green" type="range" id="volume-green" min="0" max="255" value="50">
+                <input class="slider green" type="range" id="volume-green" min="0" max="255" value="50" onchange="setLEDColor()">
             </div>
         </div>
 
         <div class="box">
             <div class="control">
-                <input class="slider blue" type="range" id="volume-blue" min="0" max="255" value="50">
+                <input class="slider blue" type="range" id="volume-blue" min="0" max="255" value="50" onchange="setLEDColor()">
             </div>
         </div>
     </div>
 
 </body>
+<script>
+    let socket = new WebSocket("ws://" + location.host + "/ws");
+    let buttonState = 0;
+
+
+    function setButtonOnPage() {
+        const button = document.getElementById("button");
+        if (buttonState == 1) {
+            button.style.background = '#ba3c3c';
+            button.textContent = "OFF";
+        } else {
+            button.style.background = '#579954';
+            button.textContent = "ON";
+        }
+    }
+
+
+    socket.onmessage = function(event) {
+        let data = JSON.parse(event.data);
+        document.getElementById("volume-red").value = data.red;
+        document.getElementById("volume-green").value = data.green;
+        document.getElementById("volume-blue").value = data.blue;
+        buttonState = data.button;
+        setButtonOnPage();
+    }
+
+
+    function setLEDColor() {
+        let data = {
+            red: document.getElementById("volume-red").value,
+            green: document.getElementById("volume-green").value,
+            blue: document.getElementById("volume-blue").value 
+        };
+        socket.send(JSON.stringify(data));
+    }
+    
+
+    function setButtonState() {
+      data = {
+        button: 1
+      }
+      socket.send(JSON.stringify(data));
+    }
+</script>
+
 </html>
 )rawliteral";
 
