@@ -1,7 +1,7 @@
 #ifndef INFOWIFI_H
 #define INFOWIFI_H
 
-const char* ssid = "Test1";
-const char* password = "123123123";
+const char* ssid = "DickTown";
+const char* password = "45848728";
 
 #endif // INFOWIFI_H

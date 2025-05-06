@@ -12,6 +12,7 @@
 AsyncWebServer server(80);
 AsyncWebSocket ws("/ws");
 
+extern void setButtonState();
 extern uint8_t valueRed;
 extern uint8_t valueGreen;
 extern uint8_t valueBlue;
@@ -43,17 +44,18 @@ void handleWebSocket(AsyncWebSocket* ws, AsyncWebSocketClient* client, AwsEventT
         {
             if (doc["red"])
             {
+                // Serial.println("Set color");
                 valueRed = doc["red"];
                 valueGreen = doc["green"];
                 valueBlue = doc["blue"];
                 flagSetLeds = 1;
             }
 
-            // if (doc["button"])
-            // {
-            //     buttonState = doc["button"];
-            //     buttonState ? flagSetLeds = 1 : flagStopLeds = 1;
-            // }
+            if (doc["setState"])
+            {
+                // Serial.println("Button on sait");
+                setButtonState();
+            }
 
             notifyClients();
         }

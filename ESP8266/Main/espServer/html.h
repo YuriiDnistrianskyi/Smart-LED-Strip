@@ -95,7 +95,7 @@ const char html[] PROGMEM = R"rawliteral(
         }
 
         .slider.blue {
-            background: linear-gradient(to right, #ffffff, #4f3cba);
+            background: linear-gradient(to right, #ffffff,rgb(0, 64, 255));
         }
 
         .slider::-webkit-slider-thumb {
@@ -147,12 +147,10 @@ const char html[] PROGMEM = R"rawliteral(
 
 
     function setButtonState() {
-        buttonState = !buttonState;
-        checkButtonState();
-        // let data = {
-        //     button: buttonState
-        //     };
-        // socket.send(JSON.stringify(data));
+        let data = {
+            setState: 1
+            };
+        socket.send(JSON.stringify(data));
     }
 
 
@@ -160,11 +158,11 @@ const char html[] PROGMEM = R"rawliteral(
         console.log("button state: " + buttonState);
         const button = document.getElementById("button");
         if (buttonState == 1) {
-            button.textContent = "ON";
-            button.style.backgroundColor = "#579954";
-        } else {
             button.textContent = "OFF";
             button.style.backgroundColor = "#ba3c3c";
+        } else {
+            button.textContent = "ON";
+            button.style.backgroundColor = "#579954";
         }
     }
 

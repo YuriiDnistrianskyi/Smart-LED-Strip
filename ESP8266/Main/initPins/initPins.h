@@ -8,6 +8,7 @@
 
 #define DEBOUNCE_TIME 50
 
+extern void notifyClients();
 extern bool buttonState;
 extern bool flagSetLeds;
 extern bool flagStopLeds;
@@ -17,15 +18,20 @@ CRGB leds[numberOfLeds];
 
 volatile uint32_t lastDebounceTime = 0;
 
+void setButtonState()
+{
+    buttonState = !buttonState;
+    buttonState ? flagSetLeds = 1 : flagStopLeds = 1;
+}
+
 void IRAM_ATTR handleButton()
 {
     uint32_t nowTime = millis();
 
     if((nowTime - lastDebounceTime) > DEBOUNCE_TIME)
     {
+        // Serial.println("Button");
         lastDebounceTime = nowTime;
-        buttonState = !buttonState;
-        buttonState ? flagSetLeds = 1 : flagStopLeds = 1;
         notifyClients();
     }
 }

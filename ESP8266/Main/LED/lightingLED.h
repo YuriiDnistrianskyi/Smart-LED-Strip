@@ -9,7 +9,6 @@ void lightingLed(uint8_t valueRed, uint8_t valueGreen, uint8_t valueBlue)
     FastLED.clear();
     for (int i = 0; i < numberOfLeds; i++)
     {
-        Serial.println(String(i) + " : " + String(numberOfLeds));
         leds[i] = CRGB(valueRed, valueGreen, valueBlue);
     }
     FastLED.show();
