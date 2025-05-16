@@ -1,7 +1,8 @@
-#ifndef HTML_H
-#define HTML_H
+#include <Arduino.h>
 
-const char html[] PROGMEM= R"rawliteral(
+#include "../include/html.h"
+
+const char html[] PROGMEM = R"rawliteral(
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -39,7 +40,7 @@ const char html[] PROGMEM= R"rawliteral(
             height: 50%;
             border: 2px;
             border-radius: 50px;
-            background-color: #579954;
+            background-color: #ba3c3c;
             font-size: 20px;
             transition: linear 0.3s;
         }
@@ -95,7 +96,7 @@ const char html[] PROGMEM= R"rawliteral(
         }
 
         .slider.blue {
-            background: linear-gradient(to right, #ffffff, #4f3cba);
+            background: linear-gradient(to right, #ffffff,rgb(0, 64, 255));
         }
 
         .slider::-webkit-slider-thumb {
@@ -116,26 +117,26 @@ const char html[] PROGMEM= R"rawliteral(
             <h1 class="text">Smart LED</h1>
         </div>
         <div class="section-block">
-            <button class="button-control" id="button" onclick="setButtonState()">ON</button>
+            <button class="button-control" id="button" onclick="setButtonState()">OFF</button>
         </div>
     </div>
 
     <div class="section-control">
         <div class="box">
             <div class="control">
-                <input class="slider red" type="range" id="volume-red" min="0" max="255" value="50" onchange="setLEDColor()">
+                <input class="slider red" type="range" id="volume-red" min="1" max="255" value="150" onchange="setLedColor()">
             </div>
         </div>
 
         <div class="box">
             <div class="control">
-                <input class="slider green" type="range" id="volume-green" min="0" max="255" value="50" onchange="setLEDColor()">
+                <input class="slider green" type="range" id="volume-green" min="1" max="255" value="150" onchange="setLedColor()">
             </div>
         </div>
 
         <div class="box">
             <div class="control">
-                <input class="slider blue" type="range" id="volume-blue" min="0" max="255" value="50" onchange="setLEDColor()">
+                <input class="slider blue" type="range" id="volume-blue" min="1" max="255" value="150" onchange="setLedColor()">
             </div>
         </div>
     </div>
@@ -146,47 +147,49 @@ const char html[] PROGMEM= R"rawliteral(
     let buttonState = 0;
 
 
-    function setButtonOnPage() {
+    function setButtonState() {
+        let data = {
+            setState: 1
+            };
+        socket.send(JSON.stringify(data));
+    }
+
+
+    function checkButtonState() {
+        console.log("button state: " + buttonState);
         const button = document.getElementById("button");
         if (buttonState == 1) {
-            button.style.background = '#ba3c3c';
             button.textContent = "OFF";
+            button.style.backgroundColor = "#ba3c3c";
         } else {
-            button.style.background = '#579954';
             button.textContent = "ON";
+            button.style.backgroundColor = "#579954";
         }
     }
 
 
+    function setLedColor()
+    {
+        let data = {
+            red: document.getElementById("volume-red").value,
+            green: document.getElementById("volume-green").value,
+            blue: document.getElementById("volume-blue").value,
+            }
+        socket.send(JSON.stringify(data));
+    }
+
+
     socket.onmessage = function(event) {
+        console.log("Get data");
         let data = JSON.parse(event.data);
         document.getElementById("volume-red").value = data.red;
         document.getElementById("volume-green").value = data.green;
         document.getElementById("volume-blue").value = data.blue;
         buttonState = data.button;
-        setButtonOnPage();
-    }
+        checkButtonState();
+        }
 
-
-    function setLEDColor() {
-        let data = {
-            red: document.getElementById("volume-red").value,
-            green: document.getElementById("volume-green").value,
-            blue: document.getElementById("volume-blue").value 
-        };
-        socket.send(JSON.stringify(data));
-    }
-    
-
-    function setButtonState() {
-      data = {
-        button: 1
-      }
-      socket.send(JSON.stringify(data));
-    }
 </script>
 
 </html>
 )rawliteral";
-
-#endif // HTML_H

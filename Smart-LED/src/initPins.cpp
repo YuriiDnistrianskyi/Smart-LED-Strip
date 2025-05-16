@@ -3,36 +3,29 @@
 #include "../include/config.h"
 #include "../include/initPins.h"
 
-extern void notifyClients();
-extern bool buttonState;
-extern bool flagSetLeds;
-extern bool flagStopLeds;
-
-CRGB leds[numberOfLeds];
+CRGB leds[NUMBER_OF_LEDS];
 volatile uint32_t lastDebounceTime = 0;
 
-void setButtonState()
+void setGoLighting()
 {
-    buttonState = !buttonState;
-    buttonState ? flagSetLeds = true : flagStopLeds = true;
+    goLighting = !goLighting;
+    goLighting ? flagSetLeds = true : flagStopLeds = true;
 }
 
 void IRAM_ATTR handleButton()
 {
-    uint32_t nowTime = millis();
+    uint32_t nowTime = micros();
 
     if((nowTime - lastDebounceTime) > DEBOUNCE_TIME)
     {
-        Serial.println("Button");
         lastDebounceTime = nowTime;
-        setButtonState();
-        notifyClients();
+        buttonState = !buttonState;
     }
 }
 
 void initPins()
 {
-    FastLED.addLeds<WS2812B, ledPin, GRB>(leds, numberOfLeds);
+    FastLED.addLeds<WS2812B, ledPin, GRB>(leds, NUMBER_OF_LEDS);
     FastLED.clear();
     FastLED.show();
 
