@@ -1,37 +1,31 @@
-#ifndef INITPINS_H
-#define INITPINS_H
-
 #include <FastLED.h>
 
-#include "pins.h"
-#include "../espServer/initWiFi.h"
-
-#define DEBOUNCE_TIME 50
+#include "../include/config.h"
+#include "../include/initPins.h"
 
 extern void notifyClients();
 extern bool buttonState;
 extern bool flagSetLeds;
 extern bool flagStopLeds;
 
-const uint8_t numberOfLeds = 30; // 60
 CRGB leds[numberOfLeds];
-
 volatile uint32_t lastDebounceTime = 0;
 
 void setButtonState()
 {
     buttonState = !buttonState;
-    buttonState ? flagSetLeds = 1 : flagStopLeds = 1;
+    buttonState ? flagSetLeds = true : flagStopLeds = true;
 }
 
 void IRAM_ATTR handleButton()
 {
     uint32_t nowTime = millis();
 
-    if((nowTime - lastDebounceTime) > DEBOUNCE_TIME)
+    if((nowTime - lastDebounceTime) > debounceTime)
     {
-        // Serial.println("Button");
+        Serial.println("Button");
         lastDebounceTime = nowTime;
+        setButtonState();
         notifyClients();
     }
 }
@@ -43,7 +37,5 @@ void initPins()
     FastLED.show();
 
     pinMode(buttonPin, INPUT);
-    attachInterrupt(digitalPinToInterrupt(buttonPin), handleButton, FALLING);    
+    attachInterrupt(digitalPinToInterrupt(buttonPin), handleButton, RISING);    
 }
-
-#endif // INITPINS_H

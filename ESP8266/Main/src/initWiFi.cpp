@@ -1,24 +1,15 @@
-#ifndef INITWIFI_H
-#define INITWIFI_H
-
 #include <ESP8266WiFi.h>
 #include <ESPAsyncTCP.h>
 #include <ESPAsyncWebServer.h>
 #include <ArduinoJson.h>
 
-#include "infoWiFi.h"
-#include "html.h"
+#include "../include/initWiFi.h"
+
+#include "../include/config.h"
+#include "../include/html.h"
 
 AsyncWebServer server(80);
 AsyncWebSocket ws("/ws");
-
-extern void setButtonState();
-extern uint8_t valueRed;
-extern uint8_t valueGreen;
-extern uint8_t valueBlue;
-extern bool buttonState;
-extern bool flagSetLeds;
-extern bool flagStopLeds;
 
 void notifyClients()
 {
@@ -48,7 +39,7 @@ void handleWebSocket(AsyncWebSocket* ws, AsyncWebSocketClient* client, AwsEventT
                 valueRed = doc["red"];
                 valueGreen = doc["green"];
                 valueBlue = doc["blue"];
-                flagSetLeds = 1;
+                flagSetLeds = true;
             }
 
             if (doc["setState"])
@@ -88,5 +79,3 @@ void initWiFi()
 
     server.begin();
 }
-
-#endif // INITWIFI_H

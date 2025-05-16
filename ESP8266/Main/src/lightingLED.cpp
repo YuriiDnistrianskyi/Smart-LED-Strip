@@ -1,8 +1,7 @@
-#ifndef LIGHTINGLED_H
-#define LIGHTINGLED_H
+#include <FastLED.h>
 
-extern const uint8_t numberOfLeds;
-extern CRGB leds[numberOfLeds];
+#include "../include/config.h"
+#include "../include/lightingLED.h"
 
 void lightingLed(uint8_t valueRed, uint8_t valueGreen, uint8_t valueBlue)
 {
@@ -13,6 +12,3 @@ void lightingLed(uint8_t valueRed, uint8_t valueGreen, uint8_t valueBlue)
     }
     FastLED.show();
 }
-
-
-#endif // LIGHTINGLED_H

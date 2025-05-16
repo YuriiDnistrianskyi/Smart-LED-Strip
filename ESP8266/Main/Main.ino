@@ -1,16 +1,17 @@
 #include <Arduino.h>
 
-#include "initPins/initPins.h"
-#include "espServer/initWifi.h"
-#include "LED/lightingLED.h"
+#include "include/config.h"
+#include "include/initPins.h"
+#include "include/initWiFi.h"
+#include "include/lightingLED.h"
 
-bool buttonState = 1;
+bool buttonState = true;
 
 uint8_t valueRed = 150;
 uint8_t valueGreen = 150;
 uint8_t valueBlue = 150;
-bool flagSetLeds = 1;
-bool flagStopLeds = 0;
+bool flagSetLeds = true;
+bool flagStopLeds = false;
 
 void setup()
 {
@@ -21,20 +22,20 @@ void setup()
 
 void loop()
 {
-    if (buttonState == 1)
+    if (buttonState == true)
     {
-        // if (flagSetLeds == 1)
+        // if (flagSetLeds == true)
         // {
             lightingLed(valueRed, valueGreen, valueBlue);
-        //     flagSetLeds = 0;
+        //     flagSetLeds = false;
         // }
     }
     else
     {
-        // if (flagStopLeds == 1)
+        // if (flagStopLeds == true)
         // {
             lightingLed(0, 0, 0);
-        //     flagStopLeds = 0;
+        //     flagStopLeds = false;
         // }
     }
 }

@@ -1,5 +1,6 @@
-#ifndef HTML_H
-#define HTML_H
+#include <Arduino.h>
+
+#include "../include/html.h"
 
 const char html[] PROGMEM = R"rawliteral(
 <!DOCTYPE html>
@@ -192,5 +193,3 @@ const char html[] PROGMEM = R"rawliteral(
 
 </html>
 )rawliteral";
-
-#endif // HTML_H
