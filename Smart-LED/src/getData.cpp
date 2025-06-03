@@ -2,7 +2,10 @@
 
 #include "../include/getData.h"
 
+#include "../include/color.h"
 #include "../include/config.h"
+
+extern Color colorLeds;
 
 void getData()
 { 
@@ -13,11 +16,10 @@ void getData()
     {
         colorLeds.initFlag = 1324;
         colorLeds.red = 150;
-        colorLeds.green = 0;
-        colorLeds.blue = 0;
+        colorLeds.green = 150;
+        colorLeds.blue = 150;
 
         EEPROM.put(0, colorLeds);
         EEPROM.commit();
     }
-
 }

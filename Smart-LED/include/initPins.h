@@ -3,13 +3,7 @@
 
 #include <Arduino.h>
 
-extern void notifyClients();
-extern bool goLighting;
-extern bool flagSetLeds;
-extern bool flagStopLeds;
-extern volatile bool buttonState;
-
-void setGoLighting();
+void setButtonState();
 void IRAM_ATTR handleButton();
 void initPins();
 

@@ -1,21 +1,24 @@
-#include <FastLED.h>
+#include <Adafruit_NeoPixel.h>
+
+#include "../include/ledsFunctions.h"
 
 #include "../include/config.h"
 #include "../include/color.h"
-#include "../include/ledsFunctions.h"
 
-void lightingLeds(Color colorForLeds)
+extern Adafruit_NeoPixel strip;
+
+void lightingLeds(Color colorLeds)
 {
-    FastLED.clear();
+    strip.clear();
     for (int i = 0; i < NUMBER_OF_LEDS; i++)
     {
-        leds[i] = CRGB(colorForLeds.red, colorForLeds.green, colorForLeds.blue);
+        strip.setPixelColor(i, strip.Color(colorLeds.red, colorLeds.green, colorLeds.blue));
     }
-    FastLED.show();
+    strip.show();
 }
 
-void clearLeds()
+void stopLeds()
 {
-    FastLED.clear();
-    FastLED.show();
+    strip.clear();
+    strip.show();
 }

@@ -10,6 +10,11 @@
 #include "../include/color.h"
 #include "../include/html.h"
 
+extern Color colorLeds;
+extern void setGoLighting();
+extern bool goLighting;
+extern bool flagSetLeds;
+
 AsyncWebServer server(80);
 AsyncWebSocket ws("/ws");
 
@@ -20,10 +25,6 @@ void notifyClients()
     doc["red"] = colorLeds.red;
     doc["green"] = colorLeds.green;
     doc["blue"] = colorLeds.blue;
-
-    // doc["red"] = valueRed;
-    // doc["green"] = valueGreen;
-    // doc["blue"] = valueBlue;
 
     doc["button"] = goLighting;
     String json;
@@ -43,10 +44,6 @@ void handleWebSocket(AsyncWebSocket* ws, AsyncWebSocketClient* client, AwsEventT
         {
             if (doc["red"])
             {
-                // valueRed = doc["red"];
-                // valueGreen = doc["green"];
-                // valueBlue = doc["blue"];
-
                 colorLeds.red = doc["red"];
                 colorLeds.green = doc["green"];
                 colorLeds.blue = doc["blue"];
@@ -58,7 +55,6 @@ void handleWebSocket(AsyncWebSocket* ws, AsyncWebSocketClient* client, AwsEventT
 
             if (doc["setState"])
             {
-                
                 setGoLighting();
             }
 

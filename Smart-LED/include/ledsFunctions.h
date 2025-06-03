@@ -2,15 +2,11 @@
 #define LEDSFUNCTIONS_H
 
 #include <Arduino.h>
-#include <FastLED.h>
 
-#include "config.h"
 #include "color.h"
 
-extern CRGB leds[NUMBER_OF_LEDS];
+void lightingLeds(Color colorLeds);
 
-void lightingLeds(Color colorForLeds);
-
-void clearLeds();
+void stopLeds();
 
 #endif // LEDSFUNCTIONS_H

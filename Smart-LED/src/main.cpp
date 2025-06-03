@@ -1,58 +1,48 @@
 #include <Arduino.h>
 
-#include "../include/config.h"
 #include "../include/color.h"
 #include "../include/initPins.h"
 #include "../include/initWiFi.h"
 #include "../include/getData.h"
 #include "../include/ledsFunctions.h"
-// #include "../include/lightingLED.h"
-
-Color colorLeds;
-
-// uint8_t valueRed = 150;
-// uint8_t valueGreen = 150;
-// uint8_t valueBlue = 150;
 
 bool goLighting = true;
+Color colorLeds;
+
 bool flagSetLeds = true;
 bool flagStopLeds = false;
-volatile bool buttonState = false;
+bool flagNotifyClients = false;
 
 void setup()
 {
     Serial.begin(115200);
-    initWiFi();
-    initPins();
     getData();
+    initPins();
+    initWiFi();
 }
 
 void loop()
 {
-    if (buttonState == true) 
+    if (flagNotifyClients == true)
     {
-        buttonState = false;
-        setGoLighting();
         notifyClients();
+        flagNotifyClients = false;
     }
-
-
+    
     if (goLighting == true)
     {
-        // if (flagSetLeds == true)
-        // {
+        if (flagSetLeds == true)
+        {
             lightingLeds(colorLeds);
-            // lightingLed(valueRed, valueGreen, valueBlue);
-        //     flagSetLeds = false;
-        // }
+            flagSetLeds = false;
+        }
     }
     else
     {
-        // if (flagStopLeds == true)
-        // {
-            clearLeds();
-            // lightingLed(0, 0, 0);
-        //     flagStopLeds = false;
-        // }
+        if (flagStopLeds == true)
+        {
+            stopLeds();
+            flagStopLeds = false;
+        }
     }
 }

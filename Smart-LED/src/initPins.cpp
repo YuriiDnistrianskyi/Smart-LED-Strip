@@ -1,9 +1,19 @@
-#include <FastLED.h>
+#include <Adafruit_NeoPixel.h>
 
-#include "../include/config.h"
 #include "../include/initPins.h"
 
-CRGB leds[NUMBER_OF_LEDS];
+#include "../include/config.h"
+#include "../include/color.h"
+
+extern Color colorLeds;
+extern void notifyClients();
+extern void lightingLeds(Color colorLeds);
+extern bool goLighting;
+extern bool flagSetLeds;
+extern bool flagStopLeds;
+extern bool flagNotifyClients;
+
+Adafruit_NeoPixel strip(NUMBER_OF_LEDS, ledPin, NEO_GRB + NEO_KHZ800);
 volatile uint32_t lastDebounceTime = 0;
 
 void setGoLighting()
@@ -14,21 +24,24 @@ void setGoLighting()
 
 void IRAM_ATTR handleButton()
 {
-    uint32_t nowTime = micros();
+    uint32_t nowTime = millis();
 
     if((nowTime - lastDebounceTime) > DEBOUNCE_TIME)
     {
+        Serial.println("Button pressed");
         lastDebounceTime = nowTime;
-        buttonState = !buttonState;
+        setGoLighting();
+        flagNotifyClients = true;
     }
 }
 
 void initPins()
 {
-    FastLED.addLeds<WS2812B, ledPin, GRB>(leds, NUMBER_OF_LEDS);
-    FastLED.clear();
-    FastLED.show();
-
     pinMode(buttonPin, INPUT);
-    attachInterrupt(digitalPinToInterrupt(buttonPin), handleButton, RISING);    
+    attachInterrupt(digitalPinToInterrupt(buttonPin), handleButton, RISING);
+
+    strip.begin();
+    strip.show();
+    strip.setBrightness(50);
+    lightingLeds(colorLeds);
 }
