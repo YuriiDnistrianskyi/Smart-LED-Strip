@@ -2,13 +2,13 @@
 #include <ESPAsyncTCP.h>
 #include <ESPAsyncWebServer.h>
 #include <ArduinoJson.h>
+#include <LittleFS.h>
 #include <EEPROM.h>
 
 #include "../include/initWiFi.h"
 
 #include "../include/config.h"
 #include "../include/color.h"
-#include "../include/html.h"
 
 extern Color colorLeds;
 extern void setGoLighting();
@@ -75,12 +75,28 @@ void initWiFi()
     Serial.print("IP address: ");
     Serial.println(WiFi.localIP());
 
+    if (!LittleFS.begin())
+    {
+        Serial.println("LittleFS dont mount");
+        return;
+    }
+
     ws.onEvent(handleWebSocket);
     server.addHandler(&ws);
 
     server.on("/", HTTP_GET, [](AsyncWebServerRequest* request)
     {
-        request->send_P(200, "text/html", html);
+        request->send(LittleFS, "/index.html", "text/html");
+    });
+
+    server.on("/style.css", HTTP_GET, [](AsyncWebServerRequest* request)
+    {
+        request->send(LittleFS, "/style.css", "text/css");
+    });
+
+    server.on("/script.js", HTTP_GET, [](AsyncWebServerRequest* request)
+    {
+        request->send(LittleFS, "/script.js", "application/javascript");
     });
 
     server.on("/favicon.ico", HTTP_GET, [](AsyncWebServerRequest* request){

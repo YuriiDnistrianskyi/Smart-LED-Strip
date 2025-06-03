@@ -4,7 +4,7 @@
 #include <Arduino.h>
 
 inline const uint8_t ledPin = D4;
-inline const uint8_t buttonPin = D2; //
+inline const uint8_t buttonPin = D5; //
 
 inline const uint8_t NUMBER_OF_LEDS = 30; // 60
 
