@@ -22,6 +22,24 @@ void setGoLighting()
     goLighting ? flagSetLeds = true : flagStopLeds = true;
 }
 
+void updateDB()
+{
+    File database = LittleFS.open("/database.txt", "a");
+    if (!database)
+    {
+        Serial.println("Database is not opened");
+        return;
+    }
+
+    String data = "\nTime: " + String(millis() / 1000) + " seconds\n" +
+                  "R: " + String(colorLeds.red) +
+                  " G: " + String(colorLeds.green) +
+                  " B: " + String(colorLeds.blue);
+
+    database.print(data);
+    database.close();
+}
+
 void notifyClients()
 {
     StaticJsonDocument<200> doc;
@@ -55,6 +73,7 @@ void handleWebSocket(AsyncWebSocket* ws, AsyncWebSocketClient* client, AwsEventT
                 EEPROM.commit();
 
                 flagSetLeds = true;
+                updateDB();
             }
 
             if (doc["setState"])
@@ -91,6 +110,11 @@ void initServer()
     server.on("/script.js", HTTP_GET, [](AsyncWebServerRequest* request)
     {
         request->send(LittleFS, "/script.js", "application/javascript");
+    });
+
+    server.on("/database", HTTP_GET, [](AsyncWebServerRequest* request)
+    {
+        request->send(LittleFS, "/database.txt", "text/plain");
     });
 
     server.on("/favicon.ico", HTTP_GET, [](AsyncWebServerRequest* request){

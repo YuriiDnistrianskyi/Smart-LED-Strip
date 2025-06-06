@@ -9,7 +9,6 @@ function setButtonState() {
 }
 
 function checkButtonState() {
-    console.log("button state: " + buttonState);
     const button = document.getElementById("button");
     if (buttonState == 1) {
         button.textContent = "OFF";
@@ -31,7 +30,6 @@ function setLedColor()
 }
 
 socket.onmessage = function(event) {
-    console.log("Get data");
     let data = JSON.parse(event.data);
     document.getElementById("volume-red").value = data.red;
     document.getElementById("volume-green").value = data.green;
