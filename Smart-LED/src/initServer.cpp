@@ -6,6 +6,7 @@
 #include "../include/initServer.h"
 
 #include "../include/Color.h"
+#include "../include/updateDB.h"
 
 extern Color colorLeds;
 extern void setGoLighting();
@@ -20,47 +21,6 @@ void setGoLighting()
 {
     goLighting = !goLighting;
     goLighting ? flagSetLeds = true : flagStopLeds = true;
-}
-
-void updateDB()
-{
-    File db = LittleFS.open("/database.txt", "r");
-    if (!db)
-    {
-        Serial.println("Database is not opened (r)");
-        return;
-    }
-
-    String data = "T: " + String(millis() / 1000) +
-                  " R: " + String(colorLeds.red) +
-                  " G: " + String(colorLeds.green) +
-                  " B: " + String(colorLeds.blue);
-
-    // Serial.println(db.size());
-
-    if (db.size() > 1000)
-    {
-        db.close();
-        File dbWrite = LittleFS.open("/database.txt", "w");
-        if (!dbWrite)
-        {
-            Serial.println("Database is not opened (w)");
-            return;
-        }
-        dbWrite.println(data);
-        dbWrite.close();
-    }
-    else
-    {
-        db.close();
-        File dbAppend = LittleFS.open("/database.txt", "a");
-        if (!dbAppend)
-        {
-            Serial.println("Database is not opened (a)");
-            return;
-        }
-        dbAppend.println(data);
-    }
 }
 
 void notifyClients()
@@ -145,4 +105,5 @@ void initServer()
     });    
 
     server.begin();
+    Serial.println("init Server ok");
 }

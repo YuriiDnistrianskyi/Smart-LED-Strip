@@ -3,15 +3,13 @@
 
 #include <Arduino.h>
 
-inline const uint8_t ledPin = D6; 
+extern const uint8_t ledPin;
 
-inline const uint8_t NUMBER_OF_LEDS = 30; // 60
+extern const uint8_t NUMBER_OF_LEDS;
 
-inline const uint32_t DEBOUNCE_TIME = 500000; // ms //
+extern const uint8_t EEPROM_SIZE;
 
-inline const uint8_t EEPROM_SIZE = 16;
-
-inline const char* ssidESP = "Smart-LED (192.168.0.100)";
-inline const char* passwordESP = "123123123";
+extern const char* ssidESP;
+extern const char* passwordESP;
 
 #endif //CONFIG_H

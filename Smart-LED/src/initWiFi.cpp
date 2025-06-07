@@ -15,6 +15,7 @@ void initWiFi()
 {
     WiFi.softAPConfig(local_IP, gateway, subnet);
     WiFi.softAP(ssidESP, passwordESP);
+    Serial.println("init WiFi ok");
 
     initServer();
 }

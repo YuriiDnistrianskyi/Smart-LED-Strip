@@ -16,4 +16,5 @@ void initPins()
     strip.show();
     strip.setBrightness(50);
     lightingLeds(colorLeds);
+    Serial.println("init Pins ok");
 }
