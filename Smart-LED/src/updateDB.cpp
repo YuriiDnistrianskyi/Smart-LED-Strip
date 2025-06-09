@@ -14,35 +14,31 @@ void updateDB()
         return;
     }
 
+    Serial.println(db.size());
+    uint32_t dbSize = db.size();
+    db.close();
+
     String data = "T: " + String(millis() / 1000) +
                   " R: " + String(colorLeds.red) +
                   " G: " + String(colorLeds.green) +
                   " B: " + String(colorLeds.blue);
 
-    Serial.println(db.size());
-
-    if (db.size() > 100000)
+    File dbUpdate;
+    if (dbSize > 10000)
     {
-        db.close();
-        File dbWrite = LittleFS.open("/database.txt", "w");
-        if (!dbWrite)
-        {
-            Serial.println("Database is not opened (w)");
-            return;
-        }
-        dbWrite.println(data);
-        dbWrite.close();
+        dbUpdate = LittleFS.open("/database.txt", "w");
     }
     else
     {
-        db.close();
-        File dbAppend = LittleFS.open("/database.txt", "a");
-        if (!dbAppend)
-        {
-            Serial.println("Database is not opened (a)");
-            return;
-        }
-        dbAppend.println(data);
-        dbAppend.close();
+        dbUpdate = LittleFS.open("/database.txt", "a");
     }
+
+    if (!dbUpdate)
+    {
+        Serial.println("Database is not opened (w/a)");
+        return;
+    }
+
+    dbUpdate.println(data);
+    dbUpdate.close();
 }
