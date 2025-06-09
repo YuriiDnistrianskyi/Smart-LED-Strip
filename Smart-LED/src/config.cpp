@@ -8,5 +8,5 @@ const uint8_t NUMBER_OF_LEDS = 48;
 
 const uint8_t EEPROM_SIZE = 16;
 
-const char* ssidESP = "Smart-LED (192.168.0.100)";
-const char* passwordESP = "123123123";
+const char* ssid = "Smart-LED (192.168.4.100)";
+const char* password = "123123123";

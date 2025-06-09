@@ -7,14 +7,14 @@
 #include "../include/color.h"
 #include "../include/initServer.h"
 
-IPAddress local_IP(192, 168, 0, 100);
-IPAddress gateway(192, 168, 0, 1);
+IPAddress local_IP(192, 168, 4, 100);
+IPAddress gateway(192, 168, 4, 1);
 IPAddress subnet(255, 255, 255, 0);
 
 void initWiFi()
 {
     WiFi.softAPConfig(local_IP, gateway, subnet);
-    WiFi.softAP(ssidESP, passwordESP);
+    WiFi.softAP(ssid, password);
     Serial.println("init WiFi ok");
 
     initServer();

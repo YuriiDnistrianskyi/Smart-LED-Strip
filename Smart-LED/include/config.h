@@ -9,7 +9,7 @@ extern const uint8_t NUMBER_OF_LEDS;
 
 extern const uint8_t EEPROM_SIZE;
 
-extern const char* ssidESP;
-extern const char* passwordESP;
+extern const char* ssid;
+extern const char* password;
 
 #endif //CONFIG_H
