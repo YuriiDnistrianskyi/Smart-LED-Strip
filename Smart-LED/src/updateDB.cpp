@@ -43,5 +43,6 @@ void updateDB()
             return;
         }
         dbAppend.println(data);
+        dbAppend.close();
     }
 }
