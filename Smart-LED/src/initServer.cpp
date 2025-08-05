@@ -6,16 +6,16 @@
 #include "../include/initServer.h"
 
 #include "../include/Color.h"
-#include "../include/updateDB.h"
 
 extern Color colorLeds;
-extern void setGoLighting();
 extern bool goLighting;
 extern bool flagSetLeds;
 extern bool flagStopLeds;
 
 AsyncWebServer server(80);
 AsyncWebSocket ws("/ws");
+
+uint32_t lastUpdateColorTime = 0;
 
 void setGoLighting()
 {
@@ -25,6 +25,8 @@ void setGoLighting()
 
 void notifyClients()
 {
+    if (ws.count() == 0) return;
+
     StaticJsonDocument<200> doc;
 
     doc["red"] = colorLeds.red;
@@ -41,12 +43,19 @@ void handleWebSocket(AsyncWebSocket* ws, AsyncWebSocketClient* client, AwsEventT
 {
     if (type == WS_EVT_DATA)
     {
-        data[len] = 0;
-        StaticJsonDocument<200> doc;
-        DeserializationError error = deserializeJson(doc, (const char*)data);
+        if (len >= 200) len = 200;
+        char buffer[201];
+        memcpy(buffer, data, len);
+        buffer[len] = '\0';
 
-        if (!error)
+        StaticJsonDocument<200> doc;
+        DeserializationError error = deserializeJson(doc, buffer);
+
+        uint32_t currentTime = millis();
+        if (!error && (currentTime - lastUpdateColorTime) > 500)
         {
+            lastUpdateColorTime = currentTime;
+
             if (doc["red"])
             {
                 colorLeds.red = doc["red"];
@@ -56,7 +65,6 @@ void handleWebSocket(AsyncWebSocket* ws, AsyncWebSocketClient* client, AwsEventT
                 EEPROM.commit();
 
                 flagSetLeds = true;
-                updateDB();
             }
 
             if (doc["setState"])
@@ -93,11 +101,6 @@ void initServer()
     server.on("/script.js", HTTP_GET, [](AsyncWebServerRequest* request)
     {
         request->send(LittleFS, "/script.js", "application/javascript");
-    });
-
-    server.on("/database", HTTP_GET, [](AsyncWebServerRequest* request)
-    {
-        request->send(LittleFS, "/database.txt", "text/plain");
     });
 
     server.on("/favicon.ico", HTTP_GET, [](AsyncWebServerRequest* request){
